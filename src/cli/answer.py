@@ -1,3 +1,16 @@
+# ************************************************************************* #
+#                                                                           #
+#                                                      :::      ::::::::    #
+#  answer.py                                         :+:      :+:    :+:    #
+#                                                  +:+ +:+         +:+      #
+#  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
+#                                              +#+#+#+#+#+   +#+            #
+#  Created: 2026/09/28 20:49:57 by hguesne         #+#    #+#               #
+#  Updated: 2026/09/28 20:49:58 by hguesne         ###   ########.fr        #
+#                                                                           #
+# ************************************************************************* #
+
+
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from src.cli.search import search
 from typing import List
