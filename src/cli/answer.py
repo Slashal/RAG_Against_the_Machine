@@ -61,4 +61,4 @@ def answer(question: str, k: int = 5) -> str:
     tokenizer, model = load_llm()
     temp = search(question, k, printable=0)
     context_snippets = [item.text for item in temp]
-    print(generate_answer(question, context_snippets, tokenizer, model))
+    return generate_answer(question, context_snippets, tokenizer, model)
