@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 17:56:12 by hguesne         #+#    #+#               #
-#  Updated: 2026/09/28 19:26:41 by hguesne         ###   ########.fr        #
+#  Updated: 2026/09/28 20:18:25 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -20,7 +20,7 @@ from rank_bm25 import BM25Okapi
 
 def search(query: str, k: int = 5,
            processed_path: str = "data/processed",
-           print: int = 1) -> List[MinimalSource]:
+           printable: int = 1) -> List[MinimalSource]:
     index_file = Path(processed_path) / "bm25_index.pkl"
     results = []
     if not index_file.exists():
@@ -48,7 +48,7 @@ def search(query: str, k: int = 5,
 
 # Affichage terminal conforme aux attentes du sujet
     for res in result:
-        if print:
+        if printable:
             print(f"{res['file_path']} [{res['first_character_index']}:" +
                   f"{res['last_character_index']}]")
         source = MinimalSource(

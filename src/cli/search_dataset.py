@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 18:31:12 by hguesne         #+#    #+#               #
-#  Updated: 2026/09/28 19:44:20 by hguesne         ###   ########.fr        #
+#  Updated: 2026/09/28 20:18:34 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -47,7 +47,7 @@ def search_dataset(dataset_path: str, k: int = 5,
         search_result = MinimalSearchResults(
             question_id=value['question_id'],
             question=value['question'],
-            retrieved_sources=search(query=value['question'], k=k, print=0)
+            retrieved_sources=search(query=value['question'], k=k, printable=0)
         )
         results.search_results.append(search_result)
     with open(save_directory, "w") as f:

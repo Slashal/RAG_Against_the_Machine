@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 14:05:45 by hguesne         #+#    #+#               #
-#  Updated: 2026/09/28 18:36:53 by hguesne         ###   ########.fr        #
+#  Updated: 2026/09/28 20:15:04 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -15,6 +15,7 @@ import fire
 from src.cli.index import indexer
 from src.cli.search import search
 from src.cli.search_dataset import search_dataset
+from src.cli.answer import answer
 
 
 class CLI:
@@ -32,6 +33,9 @@ class CLI:
                        save_directory: str = "data/output/search_results"):
         # Implementation for searching a dataset
         search_dataset(dataset_path, k, save_directory)
+
+    def answer(self, question: str, k: int = 5):
+        answer(question, k)
 
 
 def menu() -> str:
