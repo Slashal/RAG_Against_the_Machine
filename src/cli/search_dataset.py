@@ -6,13 +6,13 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 18:31:12 by hguesne         #+#    #+#               #
-#  Updated: 2026/09/28 19:30:28 by hguesne         ###   ########.fr        #
+#  Updated: 2026/09/28 19:44:20 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
 import json
 from src.cli.search import search
-from src.cli.class_sub import MinimalSource, MinimalSearchResults, StudentSearchResults
+from src.cli.class_sub import MinimalSearchResults, StudentSearchResults
 from tqdm import tqdm
 
 # class MinimalSource(BaseModel):
@@ -33,8 +33,8 @@ from tqdm import tqdm
 #     k: int
 
 
-def search_dataset(dataset_path: str = "data/datasets_public/public/UnansweredQuestions/dataset_docs_public.json",
-                   k: int = 5, save_directory: str = "data/output/search_results"):
+def search_dataset(dataset_path: str, k: int = 5,
+                   save_directory: str = "data/output/search_results"):
     dataset_name = dataset_path.split("/")[-1]
     save_directory += f"/{dataset_name}"
     results = StudentSearchResults(k=k, search_results=[])
@@ -50,3 +50,5 @@ def search_dataset(dataset_path: str = "data/datasets_public/public/UnansweredQu
             retrieved_sources=search(query=value['question'], k=k, print=0)
         )
         results.search_results.append(search_result)
+    with open(save_directory, "w") as f:
+        json.dump(results.model_dump(), f, indent=2)
