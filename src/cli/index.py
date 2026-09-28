@@ -91,50 +91,52 @@ def chunk_markdown(content: str, max_chunk_size:
     return chunks
 
 
-def indexer(max_chunk_size: int):
-    raw_path = "data/raw"
-    processed_path = "data/processed"
+def indexer(max_chunk_size: int = 2000, raw_path: str = "data/raw",
+            processed_path: str = "data/processed") -> None:
     raw_chunks = []
     all_chunks: List[Dict[str, object]] = []
     corpus_tokens: List[List[str]] = []
     try:
-        files = [f for f in Path(raw_path).rglob("*") if f.is_file()]
+        file = [f for f in Path(raw_path).rglob("*") if f.is_file()]
         Path(processed_path).mkdir(parents=True, exist_ok=True)
-        for f in tqdm(files, bar_format='[{elapsed}<{remaining}] ' +
+        for fi in tqdm(file, bar_format='[{elapsed}<{remaining}] ' +
                                         '{n_fmt}/{total_fmt} | {l_bar}{bar} ' +
                                         '{rate_fmt}{postfix}', colour='yellow',
                                         desc="Chunking files"):
-            if not f.is_file():
+            if not fi.is_file():
                 continue
 
-            if f.suffix in [".txt", ".md"]:
-                with open(f, "r", encoding="utf-8", errors="ignore") as f:
+            if fi.suffix in [".txt", ".md"]:
+                with open(fi, "r", encoding="utf-8", errors="ignore") as f:
                     text = f.read()
                     raw_chunks = chunk_markdown(text, max_chunk_size)
 
-            elif f.suffix == ".py":
-                with open(f, "r", encoding="utf-8", errors="ignore") as f:
+            elif fi.suffix == ".py":
+                with open(fi, "r", encoding="utf-8", errors="ignore") as f:
                     text = f.read()
                     raw_chunks = chunk_python(text, max_chunk_size)
             else:
                 continue
             for start, end, text in raw_chunks:
                 chunk_data = {
-                    "file_path": str(f),
+                    "file_path": str(fi),
                     "first_character_index": start,
                     "last_character_index": end,
                     "text": text
                 }
                 all_chunks.append(chunk_data)
                 corpus_tokens.append(tokenize(text))
+
+        if not corpus_tokens:
+            raise ValueError("⚠️ Aucun fichier valide trouvé à indexer.")
         bm25_model = BM25Okapi(corpus_tokens)
 
         output_file = processed_path + "/" + "bm25_index.pkl"
         with open(output_file, "wb") as f:
             pickle.dump({"bm25": bm25_model, "chunks": all_chunks}, f)
 
-        print(f"✅ Ingestion terminée ! {len(all_chunks)} " +
+        print(f"✅ Indexation terminée ! {len(all_chunks)} " +
               f"chunks sauvegardés sous {output_file}")
     except Exception as e:
-        print(e)
-        pass
+        print(f"❌ Une erreur est survenue lors de l'indexation : {e}")
+        raise
