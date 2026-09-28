@@ -6,14 +6,14 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 17:56:19 by hguesne         #+#    #+#               #
-#  Updated: 2026/09/28 17:56:20 by hguesne         ###   ########.fr        #
+#  Updated: 2026/09/28 18:34:25 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
-from pydantic import BaseModel
 from pathlib import Path
 from typing import List, Tuple, Dict
 from tqdm import tqdm
+from src.cli.class_sub import MinimalSource
 from rank_bm25 import BM25Okapi
 import pickle
 import ast
@@ -68,13 +68,6 @@ def chunk_python(content: str, max_chunk_size:
     return chunks
 
 
-class MinimalSource(BaseModel):
-    file_path: str
-    first_character_index: int
-    last_character_index: int
-    text: str
-
-
 def chunk_markdown(content: str, max_chunk_size:
                    int = 2000) -> List[Tuple[int, int, str]]:
     """Découpe un fichier Markdown/Texte en respectant la limite de caractères.
@@ -108,6 +101,7 @@ def indexer(max_chunk_size: int = 2000, raw_path: str = "data/raw",
     raw_chunks = []
     all_chunks: List[Dict[str, object]] = []
     corpus_tokens: List[List[str]] = []
+    chunk_data = MinimalSource()
     try:
         file = [f for f in Path(raw_path).rglob("*") if f.is_file()]
         Path(processed_path).mkdir(parents=True, exist_ok=True)

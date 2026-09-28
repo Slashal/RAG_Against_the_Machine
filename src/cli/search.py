@@ -6,10 +6,11 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 17:56:12 by hguesne         #+#    #+#               #
-#  Updated: 2026/09/28 18:16:21 by hguesne         ###   ########.fr        #
+#  Updated: 2026/09/28 19:26:41 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
+from src.cli.class_sub import MinimalSource
 from src.cli.index import tokenize
 from typing import Dict, List
 from pathlib import Path
@@ -18,8 +19,10 @@ from rank_bm25 import BM25Okapi
 
 
 def search(query: str, k: int = 5,
-           processed_path: str = "data/processed") -> List[Dict[str, object]]:
+           processed_path: str = "data/processed",
+           print: int = 1) -> List[MinimalSource]:
     index_file = Path(processed_path) / "bm25_index.pkl"
+    results = []
     if not index_file.exists():
         raise FileNotFoundError(f"L'index {index_file} n'existe pas."
                                 " Exécutez d'abord la commande 'index'.")
@@ -41,10 +44,19 @@ def search(query: str, k: int = 5,
                            key=lambda i: doc_scores[i], reverse=True)[:k]
 
 # 5. Formater les résultats au format MinimalSource
-    results = [all_chunks[i] for i in top_k_indices]
+    result = [all_chunks[i] for i in top_k_indices]
 
 # Affichage terminal conforme aux attentes du sujet
-    for res in results:
-        print(f"{res['file_path']} [{res['first_character_index']}:" +
-              f"{res['last_character_index']}]")
+    for res in result:
+        if print:
+            print(f"{res['file_path']} [{res['first_character_index']}:" +
+                  f"{res['last_character_index']}]")
+        source = MinimalSource(
+            file_path=str(res['file_path']),
+            first_character_index=int(res['first_character_index']),
+            last_character_index=int(res['last_character_index']),
+            text=str(res['text'])
+        )
+        results.append(source)
+
     return results
