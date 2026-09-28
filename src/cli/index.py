@@ -1,8 +1,16 @@
 from pydantic import BaseModel
 from pathlib import Path
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 from tqdm import tqdm
+from rank_bm25 import BM25Okapi
+import pickle
 import ast
+import re
+
+
+def tokenize(text: str) -> List[str]:
+    """Tokenise le texte pour le modèle BM25."""
+    return re.findall(r"\w+", text.lower())
 
 
 def chunk_python(content: str, max_chunk_size:
@@ -87,28 +95,46 @@ def indexer(max_chunk_size: int):
     raw_path = "data/raw"
     processed_path = "data/processed"
     raw_chunks = []
+    all_chunks: List[Dict[str, object]] = []
+    corpus_tokens: List[List[str]] = []
     try:
+        files = [f for f in Path(raw_path).rglob("*") if f.is_file()]
         Path(processed_path).mkdir(parents=True, exist_ok=True)
-        for file in tqdm(list(Path(raw_path).rglob("*")),
-                         bar_format='[{elapsed}<{remaining}] ' +
-                         '{n_fmt}/{total_fmt} | {l_bar}{bar} ' +
-                         '{rate_fmt}{postfix}', colour='yellow',
-                         desc="Indexing files"):
-            if not file.is_file():
+        for f in tqdm(files, bar_format='[{elapsed}<{remaining}] ' +
+                                        '{n_fmt}/{total_fmt} | {l_bar}{bar} ' +
+                                        '{rate_fmt}{postfix}', colour='yellow',
+                                        desc="Chunking files"):
+            if not f.is_file():
                 continue
 
-            if file.suffix in [".txt", ".md"]:
-                with open(file, "r", encoding="utf-8", errors="ignore") as f:
+            if f.suffix in [".txt", ".md"]:
+                with open(f, "r", encoding="utf-8", errors="ignore") as f:
                     text = f.read()
-                    raw_chunks.append(chunk_markdown(text, max_chunk_size))
+                    raw_chunks = chunk_markdown(text, max_chunk_size)
 
-            elif file.suffix == ".py":
-                with open(file, "r", encoding="utf-8", errors="ignore") as f:
+            elif f.suffix == ".py":
+                with open(f, "r", encoding="utf-8", errors="ignore") as f:
                     text = f.read()
-                    raw_chunks.append(chunk_python(text, max_chunk_size))
+                    raw_chunks = chunk_python(text, max_chunk_size)
             else:
                 continue
+            for start, end, text in raw_chunks:
+                chunk_data = {
+                    "file_path": str(f),
+                    "first_character_index": start,
+                    "last_character_index": end,
+                    "text": text
+                }
+                all_chunks.append(chunk_data)
+                corpus_tokens.append(tokenize(text))
+        bm25_model = BM25Okapi(corpus_tokens)
 
+        output_file = processed_path + "/" + "bm25_index.pkl"
+        with open(output_file, "wb") as f:
+            pickle.dump({"bm25": bm25_model, "chunks": all_chunks}, f)
+
+        print(f"✅ Ingestion terminée ! {len(all_chunks)} " +
+              f"chunks sauvegardés sous {output_file}")
     except Exception as e:
         print(e)
         pass
