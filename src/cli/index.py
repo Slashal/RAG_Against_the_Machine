@@ -1,3 +1,15 @@
+# ************************************************************************* #
+#                                                                           #
+#                                                      :::      ::::::::    #
+#  index.py                                          :+:      :+:    :+:    #
+#                                                  +:+ +:+         +:+      #
+#  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
+#                                              +#+#+#+#+#+   +#+            #
+#  Created: 2026/09/28 17:56:19 by hguesne         #+#    #+#               #
+#  Updated: 2026/09/28 17:56:20 by hguesne         ###   ########.fr        #
+#                                                                           #
+# ************************************************************************* #
+
 from pydantic import BaseModel
 from pathlib import Path
 from typing import List, Tuple, Dict
