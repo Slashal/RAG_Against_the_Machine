@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 14:05:45 by hguesne         #+#    #+#               #
-#  Updated: 2026/09/28 20:57:55 by hguesne         ###   ########.fr        #
+#  Updated: 2026/09/30 17:13:03 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -48,6 +48,9 @@ class CLI:
         if save_directory is None:
             save_directory = self.saveAQ
         answer_dataset(student_search_results_path, save_directory)
+
+    def evaluate(self, student_search_results_path: str, dataset_path: str):
+        # Implementation for evaluating the performance of the search
         pass
 
 
