@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 14:05:45 by hguesne         #+#    #+#               #
-#  Updated: 2026/09/30 17:13:03 by hguesne         ###   ########.fr        #
+#  Updated: 2026/09/30 17:43:27 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -17,6 +17,7 @@ from src.cli.search import search
 from src.cli.search_dataset import search_dataset
 from src.cli.answer import answer
 from src.cli.answer_dataset import answer_dataset
+from src.cli.evaluate import evaluate
 
 
 class CLI:
@@ -50,8 +51,7 @@ class CLI:
         answer_dataset(student_search_results_path, save_directory)
 
     def evaluate(self, student_search_results_path: str, dataset_path: str):
-        # Implementation for evaluating the performance of the search
-        pass
+        evaluate(student_search_results_path, dataset_path)
 
 
 def menu() -> str:
