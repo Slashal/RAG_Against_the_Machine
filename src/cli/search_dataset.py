@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 18:31:12 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/01 16:39:45 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/01 17:53:31 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -38,8 +38,6 @@ def search_dataset(dataset_path: str, k: int = 5,
                    save_directory: str = "data/output/search_results"):
     try:
 
-        # Replicate subfolder relative path (e.g., UnansweredQuestions/dataset_code_public.json)
-        # If relative pathing isn't needed, use save_path = Path(save_directory) / input_path.name
         input_path = Path(dataset_path)
         file_name = input_path.name
         save_path = Path(save_directory) / file_name
@@ -49,8 +47,8 @@ def search_dataset(dataset_path: str, k: int = 5,
         results = StudentSearchResults(k=k, search_results=[])
         dataset = json.load(open(dataset_path, "r"))
         dataset = dataset["rag_questions"]
-        option = "[{elapsed}<{remaining}] {n_fmt}/{total_fmt} | {l_bar}{bar} " \
-            "{rate_fmt}{postfix}"
+        option = "[{elapsed}<{remaining}] {n_fmt}/{total_fmt} |"
+        " {l_bar}{bar} {rate_fmt}{postfix}"
         for value in tqdm(dataset, bar_format=option, colour='yellow',
                           desc="Dataset Search"):
             search_result = MinimalSearchResults(

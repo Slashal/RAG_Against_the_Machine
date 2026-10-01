@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/30 17:42:18 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/01 16:25:55 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/01 17:57:18 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 import json
@@ -50,8 +50,8 @@ def evaluate(student_search_results_path: str, dataset_path: str):
             source = data['sources']
             result = student_result['retrieved_sources']
             rak += recallatk(source, result)
-        print(f"R@K: {rak}")
-        print(f"Average R@K: {rak / len(dataset_data['rag_questions']) if dataset_data['rag_questions'] else 0.0}")
+        average_rak = round(rak / len(dataset_data['rag_questions']), 2)
+        print(f"Average R@K: {average_rak}")
 
     except FileNotFoundError:
         raise ("File not found")
