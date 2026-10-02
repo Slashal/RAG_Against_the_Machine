@@ -5,6 +5,7 @@ __pycache__/
 
 # C extensions
 *.so
+exams/
 
 # Distribution / packaging
 .Python
