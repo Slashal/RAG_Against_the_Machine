@@ -6,13 +6,14 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/30 17:42:18 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/01 17:57:18 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/02 16:35:53 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 import json
+from typing import Dict
 
 
-def is_valid(source, result) -> bool:
+def is_valid(source: Dict[str, int], result: Dict[str, int]) -> bool:
     first_overlap = max(source['first_character_index'],
                         result['first_character_index'])
     last_overlap = min(source['last_character_index'],
@@ -27,7 +28,8 @@ def is_valid(source, result) -> bool:
     return (iou >= 0.05)
 
 
-def recallatk(source, result) -> float:
+def recallatk(source: list[Dict[str, int]],
+              result: list[Dict[str, int]]) -> float:
     count = 0
     for s in source:
         for r in result:
@@ -38,12 +40,12 @@ def recallatk(source, result) -> float:
     return count / len(source) if source else 0.0
 
 
-def evaluate(student_search_results_path: str, dataset_path: str):
+def evaluate(student_search_results_path: str, dataset_path: str) -> None:
     try:
-        rak = 0
-        with open(student_search_results_path, 'r') as f:
+        rak: float = 0.0
+        with open(student_search_results_path, 'r', encoding='utf-8') as f:
             student_data = json.load(f)
-        with open(dataset_path, 'r') as f:
+        with open(dataset_path, 'r', encoding='utf-8') as f:
             dataset_data = json.load(f)
         for data, student_result in zip(dataset_data['rag_questions'],
                                         student_data['search_results']):
@@ -53,7 +55,7 @@ def evaluate(student_search_results_path: str, dataset_path: str):
         average_rak = round(rak / len(dataset_data['rag_questions']), 2)
         print(f"Average R@K: {average_rak}")
 
-    except FileNotFoundError:
-        raise ("File not found")
-    except json.JSONDecodeError:
-        raise ("Error decoding JSON")
+    except FileNotFoundError as exc:
+        raise FileNotFoundError("File not found") from exc
+    except json.JSONDecodeError as exc:
+        raise ValueError("Error decoding JSON") from exc

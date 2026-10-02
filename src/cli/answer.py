@@ -11,15 +11,17 @@
 # ************************************************************************* #
 
 
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from typing import Any, List
+
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
 from src.cli.search import search
-from typing import List
 
 # Chargement du modèle par défaut Qwen/Qwen3-0.6B
 MODEL_NAME = "Qwen/Qwen3-0.6B"
 
 
-def load_llm():
+def load_llm() -> tuple[Any, Any]:
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
     model = AutoModelForCausalLM.from_pretrained(
         MODEL_NAME,
@@ -29,8 +31,8 @@ def load_llm():
     return tokenizer, model
 
 
-def generate_answer(question: str, context_snippets: list[str], tokenizer,
-                    model) -> str:
+def generate_answer(question: str, context_snippets: list[str], tokenizer: Any,
+                    model: Any) -> str:
     context_str = "\n\n---\n\n".join(context_snippets)
 
     messages = [
@@ -60,8 +62,8 @@ def generate_answer(question: str, context_snippets: list[str], tokenizer,
 
     # Décodage uniquement de la partie générée
     generated_ids = outputs[0][inputs.input_ids.shape[-1]:]
-    raw_answer = tokenizer.decode(generated_ids,
-                                  skip_special_tokens=True).strip()
+    raw_answer: str = tokenizer.decode(generated_ids,
+                                         skip_special_tokens=True).strip()
     if "</think>" in raw_answer:
         answer = raw_answer.split("</think>")[-1].strip()
     else:

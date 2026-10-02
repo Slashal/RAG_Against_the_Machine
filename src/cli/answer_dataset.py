@@ -26,7 +26,7 @@ from tqdm import tqdm
 
 
 def answer_dataset(student_search_results_path: str,
-                   save_directory: str):
+                   save_directory: str) -> None:
     try:
         search_result: List[MinimalAnswer] = []
         with open(student_search_results_path, 'r') as f:

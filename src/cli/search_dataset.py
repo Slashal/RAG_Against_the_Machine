@@ -6,59 +6,75 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 18:31:12 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/01 17:53:31 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/02 16:31:47 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
+from __future__ import annotations
+
 import json
-from src.cli.search import search
-from src.cli.class_sub import MinimalSearchResults, StudentSearchResults
-from tqdm import tqdm
 from pathlib import Path
+from typing import Any
 
-# class MinimalSource(BaseModel):
-#     file_path: str
-#     first_character_index: int
-#     last_character_index: int
-#     text: str
+from tqdm import tqdm
 
-
-# class MinimalSearchResults(BaseModel):
-#     question_id: str
-#     question: str
-#     retrieved_sources: List[MinimalSource]
-
-
-# class StudentSearchResults(BaseModel):
-#     search_results: List[MinimalSearchResults]
-#     k: int
+from src.cli.class_sub import MinimalSearchResults, StudentSearchResults
+from src.cli.search import search
 
 
 def search_dataset(dataset_path: str, k: int = 5,
-                   save_directory: str = "data/output/search_results"):
+                   save_directory: str = "data/output/search_results") -> None:
+    if not isinstance(dataset_path, str) or not dataset_path.strip():
+        print("Warning: dataset_path is empty; skipping dataset search.")
+        return
+    if k <= 0:
+        print("Warning: k must be > 0; skipping dataset search.")
+        return
+
+    input_path = Path(dataset_path)
+    if not input_path.exists() or not input_path.is_file():
+        print(f"Warning: dataset file not found: {dataset_path}")
+        return
+
     try:
+        with open(input_path, "r", encoding="utf-8") as f:
+            dataset_payload: Any = json.load(f)
+    except (OSError, json.JSONDecodeError) as exc:
+        print(f"Warning: malformed dataset JSON for {dataset_path}: {exc}")
+        return
 
-        input_path = Path(dataset_path)
-        file_name = input_path.name
-        save_path = Path(save_directory) / file_name
+    if not isinstance(dataset_payload, dict):
+        print(f"Warning: dataset JSON is not an object: {dataset_path}")
+        return
 
-        # Ensure the parent directory exists, NOT the file itself
-        save_path.parent.mkdir(parents=True, exist_ok=True)
-        results = StudentSearchResults(k=k, search_results=[])
-        dataset = json.load(open(dataset_path, "r"))
-        dataset = dataset["rag_questions"]
-        option = "[{elapsed}<{remaining}] {n_fmt}/{total_fmt} |"
-        " {l_bar}{bar} {rate_fmt}{postfix}"
-        for value in tqdm(dataset, bar_format=option, colour='yellow',
-                          desc="Dataset Search"):
-            search_result = MinimalSearchResults(
-                question_id=value['question_id'],
-                question=value['question'],
-                retrieved_sources=search(query=value['question'], k=k,
-                                         printable=0)
+    raw_dataset = dataset_payload.get("rag_questions")
+    if not isinstance(raw_dataset, list):
+        print(f"Warning: dataset has no 'rag_questions' list: {dataset_path}")
+        return
+
+    save_path = Path(save_directory) / input_path.name
+    save_path.parent.mkdir(parents=True, exist_ok=True)
+
+    results = StudentSearchResults(k=k, search_results=[])
+    option = "[{elapsed}<{remaining}] {n_fmt}/{total_fmt} |"
+    " {l_bar}{bar} {rate_fmt}{postfix}"
+
+    for value in tqdm(raw_dataset, bar_format=option, colour='yellow',
+                      desc="Dataset Search"):
+        if not isinstance(value, dict):
+            continue
+        question = value.get("question")
+        question_id = value.get("question_id")
+        if not isinstance(question, str) or not question.strip():
+            continue
+        retrieved_sources = search(query=question, k=k, printable=0)
+        results.search_results.append(
+            MinimalSearchResults(
+                question_id=str(question_id) if question_id is not None else "",
+                question=question,
+                retrieved_sources=retrieved_sources,
             )
-            results.search_results.append(search_result)
-        with open(save_path, "w") as f:
-            json.dump(results.model_dump(), f, indent=2)
-    except Exception as e:
-        print("Error occurred while searching dataset: " + str(e))
+        )
+
+    with open(save_path, "w", encoding="utf-8") as f:
+        json.dump(results.model_dump(), f, indent=2)
