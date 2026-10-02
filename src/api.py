@@ -28,7 +28,8 @@ class RAGHTTPServer(ThreadingHTTPServer):
     config: APIServerConfig
 
 
-def _json_response(payload: dict[str, Any], status: int = 200) -> tuple[int, bytes]:
+def _json_response(payload: dict[str, Any],
+                   status: int = 200) -> tuple[int, bytes]:
     """Serialize a JSON response payload."""
 
     body = json.dumps(payload, ensure_ascii=False, indent=2).encode("utf-8")
@@ -41,12 +42,17 @@ class _RAGRequestHandler(BaseHTTPRequestHandler):
     server_version = "RAGHTTP/1.0"
 
     def _config(self) -> APIServerConfig:
+        """Get the API server configuration.
+        """
         server = cast(RAGHTTPServer, self.server)
         return server.config
 
     def _read_json(self) -> dict[str, Any]:
+        """Read and parse the JSON body of the request."""
+
         content_length = int(self.headers.get("Content-Length", "0"))
-        raw_body = self.rfile.read(content_length) if content_length > 0 else b"{}"
+        raw_body = (self.rfile.read(content_length) if
+                    content_length > 0 else b"{}")
         try:
             payload = json.loads(raw_body.decode("utf-8"))
         except json.JSONDecodeError as exc:
@@ -56,6 +62,8 @@ class _RAGRequestHandler(BaseHTTPRequestHandler):
         return payload
 
     def _send_json(self, payload: dict[str, Any], status: int = 200) -> None:
+        """ Send a JSON response."""
+
         response_status, response_body = _json_response(payload, status)
         self.send_response(response_status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
@@ -63,7 +71,7 @@ class _RAGRequestHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(response_body)
 
-    def do_GET(self) -> None:  # noqa: N802 - required by BaseHTTPRequestHandler
+    def do_GET(self) -> None:  # noqa: N802
         """Serve a simple health endpoint."""
 
         path = urlparse(self.path).path
@@ -72,7 +80,7 @@ class _RAGRequestHandler(BaseHTTPRequestHandler):
             return
         self._send_json({"error": "not found"}, status=404)
 
-    def do_POST(self) -> None:  # noqa: N802 - required by BaseHTTPRequestHandler
+    def do_POST(self) -> None:  # noqa: N802
         """Serve search and answer endpoints."""
 
         path = urlparse(self.path).path
@@ -88,7 +96,8 @@ class _RAGRequestHandler(BaseHTTPRequestHandler):
                 raise ValueError("'k' must be greater than zero")
 
             if path == "/search":
-                results = search(query, k_value, self._config().processed_path, printable=0)
+                results = search(query, k_value,
+                                 self._config().processed_path, printable=0)
                 self._send_json({
                     "query": query,
                     "k": k_value,
@@ -97,12 +106,14 @@ class _RAGRequestHandler(BaseHTTPRequestHandler):
                 return
 
             if path == "/answer":
-                results = search(query, k_value, self._config().processed_path, printable=0)
+                results = search(query, k_value,
+                                 self._config().processed_path, printable=0)
                 response = {
                     "query": query,
                     "k": k_value,
                     "answer": answer(query, k_value),
-                    "retrieved_sources": [item.model_dump() for item in results],
+                    "retrieved_sources": [item.model_dump()
+                                          for item in results],
                 }
                 self._send_json(response)
                 return
@@ -111,7 +122,8 @@ class _RAGRequestHandler(BaseHTTPRequestHandler):
         except ValueError as exc:
             self._send_json({"error": str(exc)}, status=400)
         except Exception as exc:  # pragma: no cover - defensive HTTP guard
-            self._send_json({"error": f"internal server error: {exc}"}, status=500)
+            self._send_json({"error": f"internal server error: {exc}"},
+                            status=500)
 
     def log_message(self, format: str, *args: object) -> None:  # noqa: A003
         """Keep the server output quiet and CLI-friendly."""
