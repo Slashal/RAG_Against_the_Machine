@@ -6,18 +6,14 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 17:56:12 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/02 16:31:46 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/02 16:53:51 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
 from __future__ import annotations
-
-from pathlib import Path
 import pickle
+from pathlib import Path
 from typing import Any, List
-
-from rank_bm25 import BM25Plus
-
 from src.cli.class_sub import MinimalSource
 from src.cli.index import tokenize
 
@@ -77,5 +73,6 @@ def search(query: str, k: int = 5,
             )
             results.append(source)
         return results
-    except (FileNotFoundError, OSError, ValueError, TypeError, pickle.PickleError):
+    except (FileNotFoundError, OSError, ValueError,
+            TypeError, pickle.PickleError):
         return []

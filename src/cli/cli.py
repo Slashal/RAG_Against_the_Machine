@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 14:05:45 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/02 16:45:53 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/02 16:51:43 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -50,7 +50,8 @@ class CLI:
             save_directory = self.saveAQ
         answer_dataset(student_search_results_path, save_directory)
 
-    def evaluate(self, student_search_results_path: str, dataset_path: str) -> None:
+    def evaluate(self, student_search_results_path: str,
+                 dataset_path: str) -> None:
         evaluate(student_search_results_path, dataset_path)
 
 

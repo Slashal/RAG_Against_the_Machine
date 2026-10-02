@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 18:31:12 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/02 16:31:47 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/02 16:53:20 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -70,7 +70,8 @@ def search_dataset(dataset_path: str, k: int = 5,
         retrieved_sources = search(query=question, k=k, printable=0)
         results.search_results.append(
             MinimalSearchResults(
-                question_id=str(question_id) if question_id is not None else "",
+                question_id=(str(question_id) if question_id
+                             is not None else ""),
                 question=question,
                 retrieved_sources=retrieved_sources,
             )

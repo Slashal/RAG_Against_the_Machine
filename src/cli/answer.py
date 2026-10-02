@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 20:49:57 by hguesne         #+#    #+#               #
-#  Updated: 2026/09/28 20:49:58 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/02 16:51:35 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -63,7 +63,7 @@ def generate_answer(question: str, context_snippets: list[str], tokenizer: Any,
     # Décodage uniquement de la partie générée
     generated_ids = outputs[0][inputs.input_ids.shape[-1]:]
     raw_answer: str = tokenizer.decode(generated_ids,
-                                         skip_special_tokens=True).strip()
+                                       skip_special_tokens=True).strip()
     if "</think>" in raw_answer:
         answer = raw_answer.split("</think>")[-1].strip()
     else:
