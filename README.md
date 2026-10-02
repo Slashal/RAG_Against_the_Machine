@@ -29,6 +29,7 @@ uv run python -m src search_dataset --dataset_path data/datasets/UnansweredQuest
 uv run python -m src answer "your question" --k 5
 uv run python -m src answer_dataset --student_search_results_path data/output/search_results/AnsweredQuestions/answer_dataset.json --save_directory data/output/search_results_and_answer/AnsweredQuestions
 uv run python -m src evaluate --student_search_results_path path/to/search_results.json --dataset_path path/to/dataset.json
+uv run python -m src serve --host 127.0.0.1 --port 8080
 ```
 
 Run the checks:
@@ -86,6 +87,30 @@ uv run python -m src index --max_chunk_size 2000
 uv run python -m src search "How is the OpenAI server configured?" --k 5
 uv run python -m src search_dataset --dataset_path data/datasets/UnansweredQuestions/dataset_code_public.json --k 5 --save_directory data/output/search_results/UnansweredQuestions
 uv run python -m src answer_dataset --student_search_results_path data/output/search_results/AnsweredQuestions/answer_dataset.json --save_directory data/output/search_results_and_answer/AnsweredQuestions
+```
+
+## Local HTTP API
+
+The project also exposes a small HTTP API for driving search and answer requests without the CLI.
+
+Start it with:
+
+```bash
+uv run python -m src serve --host 127.0.0.1 --port 8080
+```
+
+Available endpoints:
+
+- `GET /health`
+- `POST /search` with JSON body `{"query": "...", "k": 5}`
+- `POST /answer` with JSON body `{"query": "...", "k": 5}`
+
+Example request:
+
+```bash
+curl -s http://127.0.0.1:8080/search \
+	-H 'Content-Type: application/json' \
+	-d '{"query":"How is the OpenAI server configured?","k":5}'
 ```
 
 ## Resources

@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 14:05:45 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/02 17:09:55 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/02 17:13:29 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -22,6 +22,7 @@ from src.cli.evaluate import evaluate
 from src.cli.index import indexer
 from src.cli.search import search
 from src.cli.search_dataset import search_dataset
+from src.api import serve
 
 
 class CLI:
@@ -71,6 +72,13 @@ class CLI:
         """Compute the local recall@k score against a reference dataset."""
 
         evaluate(student_search_results_path, dataset_path)
+
+    def serve(self, host: str = "127.0.0.1", port: int = 8080,
+              processed_path: str = "data/processed",
+              default_k: int = 5) -> None:
+        """Start the local HTTP API for search and answer requests."""
+
+        serve(host, port, processed_path, default_k)
 
 
 def menu() -> None:
