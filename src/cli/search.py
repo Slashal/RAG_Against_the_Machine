@@ -6,13 +6,13 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 17:56:12 by hguesne         #+#    #+#               #
-#  Updated: 2026/09/29 16:27:25 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/02 14:39:55 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
 from src.cli.class_sub import MinimalSource
 from src.cli.index import tokenize
-from typing import Dict, List
+from typing import List
 from pathlib import Path
 import pickle
 from rank_bm25 import BM25Okapi
@@ -30,7 +30,7 @@ def search(query: str, k: int = 5,
     with open(index_file, "rb") as f:
         data = pickle.load(f)
         bm25_model: BM25Okapi = data["bm25"]
-        all_chunks: List[Dict[str, object]] = data["chunks"]
+        all_chunks = data["chunks"]
 
     tokenized_query = tokenize(query)
 
@@ -41,16 +41,16 @@ def search(query: str, k: int = 5,
 
     result = [all_chunks[i] for i in top_k_indices]
 
-# Affichage terminal conforme aux attentes du sujet
     for res in result:
+        chunk = res.model_dump() if hasattr(res, "model_dump") else res
         if printable:
-            print(f"{res['file_path']} [{res['first_character_index']}:" +
-                  f"{res['last_character_index']}]")
+            print(f"{chunk['file_path']} [{chunk['first_character_index']}:" +
+                  f"{chunk['last_character_index']}]")
         source = MinimalSource(
-            file_path=str(res['file_path']),
-            first_character_index=int(res['first_character_index']),
-            last_character_index=int(res['last_character_index']),
-            text=str(res['text'])
+            file_path=str(chunk['file_path']),
+            first_character_index=int(chunk['first_character_index']),
+            last_character_index=int(chunk['last_character_index']),
+            text=str(chunk['text'])
         )
         results.append(source)
 

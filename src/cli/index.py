@@ -6,10 +6,9 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 17:56:19 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/02 14:27:09 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/02 15:39:59 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
-
 from pathlib import Path
 from typing import List, Tuple, Dict
 from tqdm import tqdm
@@ -27,14 +26,11 @@ def tokenize(text: str) -> List[str]:
 
 def chunk_python(content: str, max_chunk_size:
                  int = 2000) -> List[Tuple[int, int, str]]:
-    """Découpe un fichier Python en extraisant les fonctions
-    et classes via AST."""
     chunks = []
     lines = content.splitlines(keepends=True)
 
     try:
         tree = ast.parse(content)
-        # Extraire les fonctions, méthodes et classes top-level
         nodes = [node for node in tree.body if
                  isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef,
                                    ast.ClassDef))]
