@@ -6,9 +6,11 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 17:56:12 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/02 16:53:51 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/02 17:05:04 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
+
+"""Single-query retrieval over the persisted BM25 index."""
 
 from __future__ import annotations
 import pickle
@@ -21,6 +23,8 @@ from src.cli.index import tokenize
 def search(query: str, k: int = 5,
            processed_path: str = "data/processed",
            printable: int = 1) -> List[MinimalSource]:
+    """Return the top-k retrieved source spans for one query."""
+
     if not isinstance(query, str) or not query.strip():
         return []
     if k <= 0:

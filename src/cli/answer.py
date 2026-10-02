@@ -6,10 +6,12 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 20:49:57 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/02 16:51:35 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/02 17:04:08 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
+
+"""Answer generation on top of retrieved source snippets."""
 
 from typing import Any, List
 
@@ -22,6 +24,8 @@ MODEL_NAME = "Qwen/Qwen3-0.6B"
 
 
 def load_llm() -> tuple[Any, Any]:
+    """Load the default Qwen tokenizer and causal language model."""
+
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
     model = AutoModelForCausalLM.from_pretrained(
         MODEL_NAME,
@@ -33,6 +37,8 @@ def load_llm() -> tuple[Any, Any]:
 
 def generate_answer(question: str, context_snippets: list[str], tokenizer: Any,
                     model: Any) -> str:
+    """Generate a grounded answer from retrieved context snippets."""
+
     context_str = "\n\n---\n\n".join(context_snippets)
 
     messages = [
@@ -72,6 +78,8 @@ def generate_answer(question: str, context_snippets: list[str], tokenizer: Any,
 
 
 def answer(question: str, k: int = 5) -> str:
+    """Retrieve context for one question and return the generated answer."""
+
     context_snippets: List[str]
     tokenizer, model = load_llm()
     temp = search(question, k, printable=0)

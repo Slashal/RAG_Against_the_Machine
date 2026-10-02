@@ -6,9 +6,11 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 17:56:19 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/02 16:52:54 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/02 17:05:04 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
+"""Corpus indexing and chunking utilities for the RAG pipeline."""
+
 from pathlib import Path
 from typing import List, Tuple
 
@@ -23,6 +25,8 @@ from src.cli.class_sub import MinimalSource
 
 
 def tokenize(text: str) -> List[str]:
+    """Normalize text into a token list for BM25 indexing."""
+
     text = re.sub(r'([a-z0-9])([A-Z])', r'\1 \2', text)
     words = re.findall(r"\w+", text.lower())
     tokens = []
@@ -35,7 +39,7 @@ def tokenize(text: str) -> List[str]:
 
 def chunk_markdown(content: str, max_chunk_size: int = 2000,
                    overlap_ratio: float = 0.10) -> List[Tuple[int, int, str]]:
-    """Découpe intelligente du texte/markdown en respectant la structure."""
+    """Chunk Markdown or text content while preferring natural boundaries."""
     chunks = []
     start = 0
     length = len(content)
@@ -72,6 +76,8 @@ def chunk_markdown(content: str, max_chunk_size: int = 2000,
 
 def chunk_python(content: str, max_chunk_size: int = 2000,
                  overlap_ratio: float = 0.10) -> List[Tuple[int, int, str]]:
+    """Chunk Python source using AST blocks, with text fallback when needed."""
+
     chunks = []
     lines = content.splitlines(keepends=True)
 
@@ -112,6 +118,8 @@ def chunk_python(content: str, max_chunk_size: int = 2000,
 
 def indexer(max_chunk_size: int = 2000, raw_path: str = "data/raw",
             processed_path: str = "data/processed") -> None:
+    """Build and persist the BM25 index for the raw corpus."""
+
     raw_chunks: List[Tuple[int, int, str]] = []
     all_chunks: List[MinimalSource] = []
     corpus_tokens: List[List[str]] = []

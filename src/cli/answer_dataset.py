@@ -6,16 +6,20 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 20:48:15 by hguesne         #+#    #+#               #
-#  Updated: 2026/09/28 21:58:37 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/02 17:10:03 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
+"""Batch answer generation for previously retrieved search results."""
+
 import json
-from src.cli.answer import generate_answer, load_llm
-from src.cli.class_sub import StudentSearchResultsAndAnswer
-from src.cli.class_sub import MinimalAnswer
 from pathlib import Path
 from typing import List
+
 from tqdm import tqdm
+
+from src.cli.answer import generate_answer, load_llm
+from src.cli.class_sub import MinimalAnswer
+from src.cli.class_sub import StudentSearchResultsAndAnswer
 
 # class StudentSearchResultsAndAnswer(BaseModel):
 #     search_results: List[MinimalAnswer]
@@ -27,6 +31,9 @@ from tqdm import tqdm
 
 def answer_dataset(student_search_results_path: str,
                    save_directory: str) -> None:
+    """Generate answers for a search-results dataset
+    and persist JSON output."""
+
     try:
         search_result: List[MinimalAnswer] = []
         with open(student_search_results_path, 'r') as f:
@@ -47,8 +54,9 @@ def answer_dataset(student_search_results_path: str,
         result = StudentSearchResultsAndAnswer(search_results=search_result,
                                                k=k)
         # Save the results to a file
-        Path(save_directory).mkdir(parents=True, exist_ok=True)
-        with open(f"{save_directory}/answer_dataset.json", 'w') as f:
+        output_directory = Path(save_directory)
+        output_directory.mkdir(parents=True, exist_ok=True)
+        with open(output_directory / "answer_dataset.json", 'w') as f:
             json.dump(result.model_dump(), f, indent=2)
     except Exception as e:
         print(f"Error occurred while processing the dataset: {e}")

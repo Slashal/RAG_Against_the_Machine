@@ -6,14 +6,18 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/30 17:42:18 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/02 16:35:53 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/02 17:05:04 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
+"""Local recall@k evaluation helpers for the retrieval pipeline."""
+
 import json
 from typing import Dict
 
 
 def is_valid(source: Dict[str, int], result: Dict[str, int]) -> bool:
+    """Return whether two spans overlap enough to count as a match."""
+
     first_overlap = max(source['first_character_index'],
                         result['first_character_index'])
     last_overlap = min(source['last_character_index'],
@@ -30,6 +34,8 @@ def is_valid(source: Dict[str, int], result: Dict[str, int]) -> bool:
 
 def recallatk(source: list[Dict[str, int]],
               result: list[Dict[str, int]]) -> float:
+    """Compute recall@k for one question from source and retrieved spans."""
+
     count = 0
     for s in source:
         for r in result:
@@ -41,6 +47,8 @@ def recallatk(source: list[Dict[str, int]],
 
 
 def evaluate(student_search_results_path: str, dataset_path: str) -> None:
+    """Evaluate retrieval quality against a ground-truth dataset."""
+
     try:
         rak: float = 0.0
         with open(student_search_results_path, 'r', encoding='utf-8') as f:

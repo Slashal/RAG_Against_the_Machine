@@ -6,9 +6,11 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 18:31:12 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/02 16:53:20 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/02 17:05:04 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
+
+"""Dataset search helpers that batch the single-query retrieval path."""
 
 from __future__ import annotations
 
@@ -24,6 +26,8 @@ from src.cli.search import search
 
 def search_dataset(dataset_path: str, k: int = 5,
                    save_directory: str = "data/output/search_results") -> None:
+    """Run search for every question in a dataset and save JSON output."""
+
     if not isinstance(dataset_path, str) or not dataset_path.strip():
         print("Warning: dataset_path is empty; skipping dataset search.")
         return
