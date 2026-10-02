@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 17:56:19 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/02 17:34:37 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/02 18:05:31 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 """Corpus indexing and chunking utilities for the RAG pipeline."""
@@ -57,7 +57,6 @@ def chunk_markdown(content: str, max_chunk_size: int = 2000,
                 if last_double_newline > start + 200:
                     end = last_double_newline + 2
                 else:
-                    # 3. Sinon, un saut de ligne simple
                     last_newline = content.rfind("\n", start, end)
                     if last_newline > start:
                         end = last_newline + 1
@@ -94,12 +93,10 @@ def chunk_python(content: str, max_chunk_size: int = 2000,
             start_line = node.lineno - 1
             end_line = getattr(node, "end_lineno", len(lines))
 
-            # Calcul des positions exactes en caractères
             start_char = sum(len(lines[i]) for i in range(start_line))
             end_char = sum(len(lines[i]) for i in range(end_line))
             chunk_text = content[start_char:end_char]
 
-            # Si la taille du nœud respecte la limite
             if len(chunk_text) <= max_chunk_size:
                 chunks.append((start_char, end_char, chunk_text))
             else:
@@ -110,7 +107,6 @@ def chunk_python(content: str, max_chunk_size: int = 2000,
                                    start_char + s_end, s_text))
 
     except SyntaxError:
-        # Fallback si erreur de syntaxe dans le fichier Python
         return chunk_markdown(content, max_chunk_size, overlap_ratio)
 
     return chunks
@@ -159,7 +155,7 @@ def indexer(max_chunk_size: int = 2000, raw_path: str = "data/raw",
                 corpus_tokens.append(tokenize(text))
 
         if not corpus_tokens:
-            raise ValueError("⚠️ Aucun fichier valide trouvé à indexer.")
+            raise ValueError("⚠️ No valid files found to index.")
         bm25_model = BM25Plus(corpus_tokens)
 
         output_file = str(Path(processed_path) / "bm25_index.pkl")
@@ -167,8 +163,8 @@ def indexer(max_chunk_size: int = 2000, raw_path: str = "data/raw",
             pickle.dump({"bm25": bm25_model,
                          "chunks": all_chunks}, output_handle)
 
-        print(f"✅ Indexation terminée ! {len(all_chunks)} " +
-              f"chunks sauvegardés sous {output_file}")
+        print(f"✅ Indexing complete! {len(all_chunks)} " +
+              f"chunks save as {output_file}")
     except Exception as e:
         print(f"Error occurred during indexing: {e}")
         raise

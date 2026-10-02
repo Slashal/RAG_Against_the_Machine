@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 20:49:57 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/02 17:52:42 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/02 18:03:29 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -14,15 +14,11 @@
 """Answer generation on top of retrieved source snippets."""
 
 from __future__ import annotations
-
-import torch
 from typing import Any, List
-
 from transformers import AutoModelForCausalLM, AutoTokenizer
-
 from src.cli.search import search
 
-# Chargement du modèle par défaut Qwen/Qwen3-0.6B
+import torch
 MODEL_NAME = "Qwen/Qwen3-0.6B"
 
 
@@ -71,7 +67,6 @@ def generate_answer(question: str, context_snippets: list[str], tokenizer: Any,
         },
     ]
 
-    # Le tokenizer applique les bons marqueurs spéciaux pour Qwen
     prompt = tokenizer.apply_chat_template(
         messages, tokenize=False, add_generation_prompt=True
     )
@@ -81,7 +76,6 @@ def generate_answer(question: str, context_snippets: list[str], tokenizer: Any,
         inputs = inputs.to(model.device)
     outputs = model.generate(**inputs, max_new_tokens=256, do_sample=False)
 
-    # Décodage uniquement de la partie générée
     generated_ids = outputs[0][inputs.input_ids.shape[-1]:]
     raw_answer: str = tokenizer.decode(generated_ids,
                                        skip_special_tokens=True).strip()

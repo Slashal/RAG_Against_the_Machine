@@ -6,16 +6,15 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 14:05:45 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/02 17:54:02 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/02 18:03:42 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
 """Python Fire CLI entry point for indexing, retrieval, and evaluation."""
 
-from typing import Optional
-
 import fire
 
+from typing import Optional
 from src.cli.answer import answer
 from src.cli.answer_dataset import answer_dataset
 from src.cli.evaluate import evaluate

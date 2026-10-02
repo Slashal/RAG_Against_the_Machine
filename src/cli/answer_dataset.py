@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 20:48:15 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/02 17:10:03 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/02 18:02:53 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 """Batch answer generation for previously retrieved search results."""
@@ -53,7 +53,6 @@ def answer_dataset(student_search_results_path: str,
             search_result.append(answer)
         result = StudentSearchResultsAndAnswer(search_results=search_result,
                                                k=k)
-        # Save the results to a file
         output_directory = Path(save_directory)
         output_directory.mkdir(parents=True, exist_ok=True)
         with open(output_directory / "answer_dataset.json", 'w') as f:
