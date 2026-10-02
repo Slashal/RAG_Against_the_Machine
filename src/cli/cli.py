@@ -28,6 +28,9 @@ from src.api import serve
 class CLI:
     """Expose project commands as Fire entry points."""
 
+    MAX_K = 10
+    MAX_CHUNK_SIZE = 2000
+
     def __init__(self) -> None:
         self.saveUA = "data/output/search_results/UnansweredQuestions"
         self.saveAQ = "data/output/search_results_and_answer/AnsweredQuestions"
@@ -37,12 +40,14 @@ class CLI:
               processed_path: str = "data/processed") -> None:
         """Build the BM25 index from the raw corpus."""
 
+        max_chunk_size = min(max_chunk_size, self.MAX_CHUNK_SIZE)
         indexer(max_chunk_size, raw_path, processed_path)
 
     def search(self, query: str, k: int = 5,
                processed_path: str = "data/processed") -> None:
         """Return the top-k sources for a single query."""
 
+        k = min(k, self.MAX_K)
         search(query, k, processed_path)
 
     def search_dataset(self, dataset_path: str, k: int = 5,
@@ -51,11 +56,13 @@ class CLI:
 
         if save_directory is None:
             save_directory = self.saveUA
+        k = min(k, self.MAX_K)
         search_dataset(dataset_path, k, save_directory)
 
     def answer(self, question: str, k: int = 5) -> None:
         """Generate one grounded answer for a single question."""
 
+        k = min(k, self.MAX_K)
         answer(question, k)
 
     def answer_dataset(self, student_search_results_path: str,
@@ -78,6 +85,7 @@ class CLI:
               default_k: int = 5) -> None:
         """Start the local HTTP API for search and answer requests."""
 
+        default_k = min(default_k, self.MAX_K)
         serve(host, port, processed_path, default_k)
 
 

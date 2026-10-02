@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 17:56:19 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/02 17:05:04 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/02 17:34:37 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 """Corpus indexing and chunking utilities for the RAG pipeline."""
@@ -120,6 +120,7 @@ def indexer(max_chunk_size: int = 2000, raw_path: str = "data/raw",
             processed_path: str = "data/processed") -> None:
     """Build and persist the BM25 index for the raw corpus."""
 
+    max_chunk_size = min(max_chunk_size, 2000)
     raw_chunks: List[Tuple[int, int, str]] = []
     all_chunks: List[MinimalSource] = []
     corpus_tokens: List[List[str]] = []
@@ -169,5 +170,5 @@ def indexer(max_chunk_size: int = 2000, raw_path: str = "data/raw",
         print(f"✅ Indexation terminée ! {len(all_chunks)} " +
               f"chunks sauvegardés sous {output_file}")
     except Exception as e:
-        print(f"❌ Une erreur est survenue lors de l'indexation : {e}")
+        print(f"Error occurred during indexing: {e}")
         raise

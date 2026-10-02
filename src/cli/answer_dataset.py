@@ -39,7 +39,7 @@ def answer_dataset(student_search_results_path: str,
         with open(student_search_results_path, 'r') as f:
             dataset = json.load(f)
         tokenizer, model = load_llm()
-        k = dataset['k']
+        k = min(int(dataset['k']), 10)
         for data in tqdm(dataset['search_results'], desc="Generating answers"):
             question = data['question']
             context_source = []

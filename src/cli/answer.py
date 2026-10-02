@@ -80,6 +80,7 @@ def generate_answer(question: str, context_snippets: list[str], tokenizer: Any,
 def answer(question: str, k: int = 5) -> str:
     """Retrieve context for one question and return the generated answer."""
 
+    k = min(k, 10)
     context_snippets: List[str]
     tokenizer, model = load_llm()
     temp = search(question, k, printable=0)

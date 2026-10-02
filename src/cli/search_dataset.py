@@ -28,6 +28,7 @@ def search_dataset(dataset_path: str, k: int = 5,
                    save_directory: str = "data/output/search_results") -> None:
     """Run search for every question in a dataset and save JSON output."""
 
+    k = min(k, 10)
     if not isinstance(dataset_path, str) or not dataset_path.strip():
         print("Warning: dataset_path is empty; skipping dataset search.")
         return

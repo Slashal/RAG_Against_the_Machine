@@ -134,6 +134,7 @@ def serve(host: str = "127.0.0.1", port: int = 8080,
           default_k: int = 5) -> None:
     """Run the local HTTP API server."""
 
+    default_k = min(default_k, 10)
     config = APIServerConfig(
         host=host,
         port=port,
