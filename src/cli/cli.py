@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 14:05:45 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/02 17:13:29 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/02 17:54:02 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -63,7 +63,7 @@ class CLI:
         """Generate one grounded answer for a single question."""
 
         k = min(k, self.MAX_K)
-        answer(question, k)
+        print(answer(question, k))
 
     def answer_dataset(self, student_search_results_path: str,
                        save_directory: Optional[str] = None) -> None:

@@ -6,13 +6,16 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 20:49:57 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/02 17:04:08 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/02 17:52:42 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
 
 """Answer generation on top of retrieved source snippets."""
 
+from __future__ import annotations
+
+import torch
 from typing import Any, List
 
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -27,11 +30,21 @@ def load_llm() -> tuple[Any, Any]:
     """Load the default Qwen tokenizer and causal language model."""
 
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-    model = AutoModelForCausalLM.from_pretrained(
-        MODEL_NAME,
-        torch_dtype="auto",
-        device_map="auto"
-    )
+    try:
+        model = AutoModelForCausalLM.from_pretrained(
+            MODEL_NAME,
+            dtype=torch.float16,
+            device_map="auto",
+        )
+    except RuntimeError as exc:
+        message = str(exc).lower()
+        if "out of memory" not in message and "cuda" not in message:
+            raise
+        model = AutoModelForCausalLM.from_pretrained(
+            MODEL_NAME,
+            dtype=torch.float32,
+            device_map="cpu",
+        )
     return tokenizer, model
 
 
@@ -63,7 +76,9 @@ def generate_answer(question: str, context_snippets: list[str], tokenizer: Any,
         messages, tokenize=False, add_generation_prompt=True
     )
 
-    inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+    inputs = tokenizer(prompt, return_tensors="pt")
+    if hasattr(model, "device"):
+        inputs = inputs.to(model.device)
     outputs = model.generate(**inputs, max_new_tokens=256, do_sample=False)
 
     # Décodage uniquement de la partie générée
