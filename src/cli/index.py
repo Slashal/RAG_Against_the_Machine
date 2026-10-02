@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 17:56:19 by hguesne         #+#    #+#               #
-#  Updated: 2026/09/28 18:34:25 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/02 14:27:09 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -101,7 +101,6 @@ def indexer(max_chunk_size: int = 2000, raw_path: str = "data/raw",
     raw_chunks = []
     all_chunks: List[Dict[str, object]] = []
     corpus_tokens: List[List[str]] = []
-    chunk_data = MinimalSource()
     try:
         file = [f for f in Path(raw_path).rglob("*") if f.is_file()]
         Path(processed_path).mkdir(parents=True, exist_ok=True)
@@ -124,12 +123,12 @@ def indexer(max_chunk_size: int = 2000, raw_path: str = "data/raw",
             else:
                 continue
             for start, end, text in raw_chunks:
-                chunk_data = {
-                    "file_path": str(fi),
-                    "first_character_index": start,
-                    "last_character_index": end,
-                    "text": text
-                }
+                chunk_data = MinimalSource(
+                    file_path=str(fi),
+                    first_character_index=start,
+                    last_character_index=end,
+                    text=text
+                )
                 all_chunks.append(chunk_data)
                 corpus_tokens.append(tokenize(text))
 
