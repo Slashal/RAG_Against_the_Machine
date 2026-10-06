@@ -6,18 +6,19 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 17:56:12 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/06 17:06:08 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/06 17:18:59 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
 """Single-query retrieval over the persisted BM25 index."""
 
 from __future__ import annotations
-import pickle
 from pathlib import Path
 from typing import Any, List
 from src.cli.class_sub import MinimalSource
 from src.cli.index import tokenize
+
+import pickle
 
 
 def search(query: str, k: int = 5,
