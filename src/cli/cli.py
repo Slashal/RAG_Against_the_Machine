@@ -6,13 +6,11 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 14:05:45 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/02 18:03:42 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/06 17:52:16 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
 """Python Fire CLI entry point for indexing, retrieval, and evaluation."""
-
-import fire
 
 from typing import Optional
 from src.cli.answer import answer
@@ -23,14 +21,18 @@ from src.cli.search import search
 from src.cli.search_dataset import search_dataset
 from src.api import serve
 
+import fire
+
 
 class CLI:
     """Expose project commands as Fire entry points."""
 
+    # Définition des constantes maximales
     MAX_K = 10
     MAX_CHUNK_SIZE = 2000
 
     def __init__(self) -> None:
+        # Chemin par défaut
         self.saveUA = "data/output/search_results/UnansweredQuestions"
         self.saveAQ = "data/output/search_results_and_answer/AnsweredQuestions"
 
