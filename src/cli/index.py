@@ -6,22 +6,20 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 17:56:19 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/02 18:05:31 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/06 17:19:32 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 """Corpus indexing and chunking utilities for the RAG pipeline."""
 
 from pathlib import Path
 from typing import List, Tuple
+from rank_bm25 import BM25Plus
+from tqdm import tqdm
+from src.cli.class_sub import MinimalSource
 
 import ast
 import pickle
 import re
-
-from rank_bm25 import BM25Plus
-from tqdm import tqdm
-
-from src.cli.class_sub import MinimalSource
 
 
 def tokenize(text: str) -> List[str]:
