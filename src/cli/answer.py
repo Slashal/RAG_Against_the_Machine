@@ -6,11 +6,9 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 20:49:57 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/02 18:03:29 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/06 18:02:10 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
-
-
 """Answer generation on top of retrieved source snippets."""
 
 from __future__ import annotations
@@ -19,19 +17,23 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from src.cli.search import search
 
 import torch
+
 MODEL_NAME = "Qwen/Qwen3-0.6B"
 
 
 def load_llm() -> tuple[Any, Any]:
     """Load the default Qwen tokenizer and causal language model."""
 
+    # Chargement du tokenizer et du modèle
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+
     try:
         model = AutoModelForCausalLM.from_pretrained(
             MODEL_NAME,
             dtype=torch.float16,
             device_map="auto",
         )
+
     except RuntimeError as exc:
         message = str(exc).lower()
         if "out of memory" not in message and "cuda" not in message:
@@ -41,6 +43,7 @@ def load_llm() -> tuple[Any, Any]:
             dtype=torch.float32,
             device_map="cpu",
         )
+
     return tokenizer, model
 
 
@@ -48,8 +51,10 @@ def generate_answer(question: str, context_snippets: list[str], tokenizer: Any,
                     model: Any) -> str:
     """Generate a grounded answer from retrieved context snippets."""
 
+    # Transformation des extraits de contexte en une chaîne de caractères
     context_str = "\n\n---\n\n".join(context_snippets)
 
+    # Génération du prompt
     messages = [
         {
             "role": "system",
@@ -67,22 +72,31 @@ def generate_answer(question: str, context_snippets: list[str], tokenizer: Any,
         },
     ]
 
+    # Formatage de la liste de message en prompt structuré
     prompt = tokenizer.apply_chat_template(
         messages, tokenize=False, add_generation_prompt=True
     )
 
+    # Tokenisation du prompt
     inputs = tokenizer(prompt, return_tensors="pt")
     if hasattr(model, "device"):
         inputs = inputs.to(model.device)
+
+    # Génération de la réponse en utilisant
+    # une approche détérministe (do_sample=False)
     outputs = model.generate(**inputs, max_new_tokens=256, do_sample=False)
 
+    # Extraction de la réponse générée
     generated_ids = outputs[0][inputs.input_ids.shape[-1]:]
     raw_answer: str = tokenizer.decode(generated_ids,
                                        skip_special_tokens=True).strip()
+
+    # Suppression du contenu entre les balises de pensée
     if "</think>" in raw_answer:
         answer = raw_answer.split("</think>")[-1].strip()
     else:
         answer = raw_answer
+
     return answer
 
 
@@ -90,8 +104,17 @@ def answer(question: str, k: int = 5) -> str:
     """Retrieve context for one question and return the generated answer."""
 
     k = min(k, 10)
+    if k <= 0 or k > 10 or not isinstance(k, int):
+        raise ValueError("k must be an integer between 1 and 10")
+
     context_snippets: List[str]
+
+    # Chargement du LLM
     tokenizer, model = load_llm()
+
+    # Recherche de contexte
     temp = search(question, k, printable=0)
     context_snippets = [item.text for item in temp]
+
+    # Génération de la réponse
     return generate_answer(question, context_snippets, tokenizer, model)
