@@ -6,29 +6,44 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/30 17:42:18 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/02 17:05:04 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/06 17:50:43 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 """Local recall@k evaluation helpers for the retrieval pipeline."""
 
-import json
 from typing import Dict
+
+import json
 
 
 def is_valid(source: Dict[str, int], result: Dict[str, int]) -> bool:
     """Return whether two spans overlap enough to count as a match."""
 
+    # Calcul le début du chevauchement entre les deux extraits
     first_overlap = max(source['first_character_index'],
                         result['first_character_index'])
+
+    # Calcul la fin du chevauchement entre les deux extraits
     last_overlap = min(source['last_character_index'],
                        result['last_character_index'])
+
+    # Calcul la taille du chevauchement
     overlap = max(0, last_overlap - first_overlap)
+
+    # Calcul la longueur de la source
     source_length = (source['last_character_index'] -
                      source['first_character_index'])
+
+    # Calcul la longueur du résultat
     result_length = (result['last_character_index'] -
                      result['first_character_index'])
+
+    # Calcul la longueur de caractères qui ne sont pas partagés
     unique_char = source_length + result_length - overlap
+
+    # Calcul l'intersection over union
     iou = (overlap / unique_char) if unique_char > 0 else 0
+
     return (iou >= 0.05)
 
 
@@ -51,10 +66,15 @@ def evaluate(student_search_results_path: str, dataset_path: str) -> None:
 
     try:
         rak: float = 0.0
+
+        # Chargement de dataset_path et student_search_results_path
         with open(student_search_results_path, 'r', encoding='utf-8') as f:
             student_data = json.load(f)
         with open(dataset_path, 'r', encoding='utf-8') as f:
             dataset_data = json.load(f)
+
+        # Parcourt les questions et les résultats de recherche
+        # pour calculer le R@K (RecallAtK)
         for data, student_result in zip(dataset_data['rag_questions'],
                                         student_data['search_results']):
             source = data['sources']
