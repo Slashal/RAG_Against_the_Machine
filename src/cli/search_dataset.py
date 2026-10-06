@@ -6,22 +6,20 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 18:31:12 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/06 17:18:08 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/06 17:18:38 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
 """Dataset search helpers that batch the single-query retrieval path."""
 
 from __future__ import annotations
-
-import json
+from tqdm import tqdm
 from pathlib import Path
 from typing import Any
-
-from tqdm import tqdm
-
 from src.cli.class_sub import MinimalSearchResults, StudentSearchResults
 from src.cli.search import search
+
+import json
 
 
 def search_dataset(dataset_path: str, k: int = 5,
