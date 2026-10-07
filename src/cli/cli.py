@@ -6,13 +6,11 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 14:05:45 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/06 17:52:16 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/07 16:04:13 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
-
 """Python Fire CLI entry point for indexing, retrieval, and evaluation."""
 
-from typing import Optional
 from src.cli.answer import answer
 from src.cli.answer_dataset import answer_dataset
 from src.cli.evaluate import evaluate
@@ -31,11 +29,6 @@ class CLI:
     MAX_K = 10
     MAX_CHUNK_SIZE = 2000
 
-    def __init__(self) -> None:
-        # Chemin par défaut
-        self.saveUA = "data/output/search_results/UnansweredQuestions"
-        self.saveAQ = "data/output/search_results_and_answer/AnsweredQuestions"
-
     def index(self, max_chunk_size: int = 2000,
               raw_path: str = "data/raw",
               processed_path: str = "data/processed") -> None:
@@ -52,11 +45,9 @@ class CLI:
         search(query, k, processed_path)
 
     def search_dataset(self, dataset_path: str, k: int = 5,
-                       save_directory: Optional[str] = None) -> None:
+                       save_directory: str = None) -> None:
         """Run search over a dataset and save StudentSearchResults JSON."""
 
-        if save_directory is None:
-            save_directory = self.saveUA
         k = min(k, self.MAX_K)
         search_dataset(dataset_path, k, save_directory)
 
@@ -67,12 +58,10 @@ class CLI:
         print(answer(question, k))
 
     def answer_dataset(self, student_search_results_path: str,
-                       save_directory: Optional[str] = None) -> None:
+                       save_directory: str = None) -> None:
         """Generate answers for a dataset and save
         StudentSearchResultsAndAnswer JSON."""
 
-        if save_directory is None:
-            save_directory = self.saveAQ
         answer_dataset(student_search_results_path, save_directory)
 
     def evaluate(self, student_search_results_path: str,

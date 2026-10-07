@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 18:31:12 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/07 15:55:18 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/07 16:05:13 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -25,7 +25,7 @@ import json
 
 
 def search_dataset(dataset_path: str, k: int = 5,
-                   save_directory: str = "data/output/search_results") -> None:
+                   save_directory: str = None) -> None:
     """Run search for every question in a dataset and save JSON output."""
 
     try:
