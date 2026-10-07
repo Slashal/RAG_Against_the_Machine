@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 20:48:15 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/07 16:05:06 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/07 16:10:18 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 """Batch answer generation for previously retrieved search results."""
@@ -66,8 +66,9 @@ def answer_dataset(student_search_results_path: str,
         output_directory.mkdir(parents=True, exist_ok=True)
 
         # Sauvegarde du résultat
-        with open(output_directory / "answer_dataset.json", 'w') as f:
+        output_file = Path(student_search_results_path).name
+        with open(output_directory / output_file, 'w') as f:
             json.dump(result.model_dump(), f, indent=2)
 
     except Exception as e:
-        print(f"Error occurred while processing the dataset: {e}")
+        raise Exception(f"Error occurred while processing the dataset: {e}")
