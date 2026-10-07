@@ -121,4 +121,7 @@ curl -s http://127.0.0.1:8080/search \
 - Pydantic documentation
 - Qwen/Qwen3-0.6B model documentation
 
-AI was used to draft documentation text and test edge cases.
+AI was used to:
+- Draft the README documentation text
+- Test edge cases in the retrieval pipeline (empty queries, malformed inputs)
+- Generate example usage commands
