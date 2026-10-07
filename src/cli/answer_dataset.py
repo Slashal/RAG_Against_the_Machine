@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 20:48:15 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/06 18:09:46 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/07 15:07:56 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 """Batch answer generation for previously retrieved search results."""

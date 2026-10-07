@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/30 17:42:18 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/06 17:50:43 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/07 15:22:18 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 """Local recall@k evaluation helpers for the retrieval pipeline."""

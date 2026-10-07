@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 17:56:12 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/06 17:18:59 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/07 15:14:32 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -26,16 +26,20 @@ def search(query: str, k: int = 5,
            printable: int = 1) -> List[MinimalSource]:
     """Return the top-k retrieved source spans for one query."""
 
-    # S'il n'y a pas de question ou que la question n'est pas une str
-    if not isinstance(query, str) or not query.strip():
-        return []
-    # Si k est inférieur ou égale a 0, n'est pas un int ou si > 10
-    if k <= 0 or not isinstance(k, int) or k > 10:
-        return []
+    try:
+        # S'il n'y a pas de question ou que la question n'est pas une str
+        if not isinstance(query, str) or not query.strip():
+            raise ValueError("Invalid query: must be a non-empty string.")
+        # Si k est inférieur ou égale a 0, n'est pas un int ou si > 10
+        if k <= 0 or not isinstance(k, int) or k > 10:
+            raise ValueError("Invalid value for k: must be 0 < k <= 10.")
 
-    # Verifie que l'index pickle existe
-    index_file = Path(processed_path) / "bm25_index.pkl"
-    if not index_file.exists():
+        # Verifie que l'index pickle existe
+        index_file = Path(processed_path) / "bm25_index.pkl"
+        if not index_file.exists():
+            raise ValueError("Index file not found.")
+    except Exception as e:
+        print(f"Error occurred while validating inputs: {e}")
         return []
 
     try:
