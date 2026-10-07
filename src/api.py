@@ -1,15 +1,14 @@
 """Small local HTTP API for search and answer requests."""
 
 from __future__ import annotations
-
-import json
+from src.cli.answer import answer
 from dataclasses import dataclass
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any, cast
 from urllib.parse import urlparse
-
-from src.cli.answer import answer
 from src.cli.search import search
+
+import json
 
 
 @dataclass(frozen=True)
@@ -111,7 +110,8 @@ class _RAGRequestHandler(BaseHTTPRequestHandler):
                 response = {
                     "query": query,
                     "k": k_value,
-                    "answer": answer(query, k_value),
+                    "answer": answer(query, self._config().processed_path,
+                                     k_value),
                     "retrieved_sources": [item.model_dump()
                                           for item in results],
                 }
@@ -127,6 +127,7 @@ class _RAGRequestHandler(BaseHTTPRequestHandler):
 
     def log_message(self, format: str, *args: object) -> None:  # noqa: A003
         """Keep the server output quiet and CLI-friendly."""
+        pass
 
 
 def serve(host: str = "127.0.0.1", port: int = 8080,

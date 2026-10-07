@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 20:48:15 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/07 16:10:18 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/07 16:17:58 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 """Batch answer generation for previously retrieved search results."""
@@ -22,7 +22,7 @@ import json
 
 
 def answer_dataset(student_search_results_path: str,
-                   save_directory: str = None) -> None:
+                   save_directory: str) -> None:
     """Generate answers for a search-results dataset
     and persist JSON output."""
 

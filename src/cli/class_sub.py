@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 18:27:37 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/07 14:58:29 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/07 16:21:29 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 """Pydantic data models exchanged between the CLI pipeline stages."""

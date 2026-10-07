@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 14:05:45 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/07 16:07:27 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/07 16:17:22 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 """Python Fire CLI entry point for indexing, retrieval, and evaluation."""
@@ -44,8 +44,8 @@ class CLI:
         k = min(k, self.MAX_K)
         search(query, k, processed_path)
 
-    def search_dataset(self, dataset_path: str, k: int = 5,
-                       save_directory: str = None) -> None:
+    def search_dataset(self, dataset_path: str, k: int,
+                       save_directory: str) -> None:
         """Run search over a dataset and save StudentSearchResults JSON."""
 
         k = min(k, self.MAX_K)
@@ -59,7 +59,7 @@ class CLI:
         print(answer(question, processed_path, k))
 
     def answer_dataset(self, student_search_results_path: str,
-                       save_directory: str = None) -> None:
+                       save_directory: str) -> None:
         """Generate answers for a dataset and save
         StudentSearchResultsAndAnswer JSON."""
 

@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 20:49:57 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/07 16:07:59 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/07 16:21:38 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 """Answer generation on top of retrieved source snippets."""

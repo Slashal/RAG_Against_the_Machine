@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 17:56:19 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/06 17:42:43 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/07 16:21:19 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 """Corpus indexing and chunking utilities for the RAG pipeline."""

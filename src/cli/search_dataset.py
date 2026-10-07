@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 18:31:12 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/07 16:05:13 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/07 16:17:15 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -24,8 +24,8 @@ from src.cli.search import search
 import json
 
 
-def search_dataset(dataset_path: str, k: int = 5,
-                   save_directory: str = None) -> None:
+def search_dataset(dataset_path: str, k: int,
+                   save_directory: str) -> None:
     """Run search for every question in a dataset and save JSON output."""
 
     try:
