@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 18:31:12 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/07 15:25:52 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/07 15:55:18 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -16,7 +16,9 @@ from __future__ import annotations
 from tqdm import tqdm
 from pathlib import Path
 from typing import Any
-from src.cli.class_sub import MinimalSearchResults, StudentSearchResults
+from src.cli.class_sub import AnsweredQuestion, MinimalSearchResults
+from src.cli.class_sub import RagDataset, StudentSearchResults
+from src.cli.class_sub import UnansweredQuestion
 from src.cli.search import search
 
 import json
@@ -48,14 +50,14 @@ def search_dataset(dataset_path: str, k: int = 5,
         # Chargement du fichier JSON dataset
         with open(input_path, "r", encoding="utf-8") as f:
             dataset_payload: Any = json.load(f)
-        if not isinstance(dataset_payload, dict):
-            raise ValueError("Warning: dataset JSON is not "
-                             f"an object: {dataset_path}")
-        # Extraction des questions du dataset
-        raw_dataset = dataset_payload.get("rag_questions")
-        if not isinstance(raw_dataset, list):
-            raise ValueError("Warning: dataset has no 'rag_questions'"
-                             f" list: {dataset_path}")
+            raw_dataset = RagDataset.model_validate(dataset_payload)
+            if not isinstance(dataset_payload, dict):
+                raise ValueError("Warning: dataset JSON is not "
+                                 f"an object: {dataset_path}")
+            # Extraction des questions du dataset
+            if not isinstance(raw_dataset, RagDataset):
+                raise ValueError("Warning: dataset has no 'rag_questions'"
+                                 f" list: {dataset_path}")
 
     except (OSError, json.JSONDecodeError) as exc:
         raise ValueError("Warning: malformed dataset "
@@ -72,15 +74,15 @@ def search_dataset(dataset_path: str, k: int = 5,
     option = "[{elapsed}<{remaining}] {n_fmt}/{total_fmt} |"
     " {l_bar}{bar} {rate_fmt}{postfix}"
 
-    for value in tqdm(raw_dataset, bar_format=option, colour='yellow',
-                      desc="Dataset Search"):
-        if not isinstance(value, dict):
+    for value in tqdm(raw_dataset.rag_questions, bar_format=option,
+                      colour='yellow', desc="Dataset Search"):
+        if (not isinstance(value, AnsweredQuestion) and
+                not isinstance(value, UnansweredQuestion)):
             continue
         # Extraction de la question et de son ID
-        question = value.get("question")
-        question_id = value.get("question_id")
-        if not isinstance(question, str) or not question.strip():
-            continue
+        print(value)
+        question = value.question
+        question_id = value.question_id
 
         # Récupération des sources correspondantes à la question
         retrieved_sources = search(query=question, k=k, printable=0)
