@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 18:31:12 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/07 15:21:56 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/07 15:25:52 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -26,37 +26,40 @@ def search_dataset(dataset_path: str, k: int = 5,
                    save_directory: str = "data/output/search_results") -> None:
     """Run search for every question in a dataset and save JSON output."""
 
-    # Validation des paramètres data_path et k
-    if not isinstance(dataset_path, str) or not dataset_path.strip():
-        print("Warning: dataset_path is empty; skipping dataset search.")
-        return
-    if k <= 0 or k > 10 or not isinstance(k, int):
-        print("Warning: k must be 0 < k <= 10; skipping dataset search.")
-        return
+    try:
+        # Validation des paramètres data_path et k
+        if not isinstance(dataset_path, str) or not dataset_path.strip():
+            raise ValueError("Warning: dataset_path is empty; "
+                             "skipping dataset search.")
+        if k <= 0 or k > 10 or not isinstance(k, int):
+            raise ValueError("Warning: k must be 0 < k <= 10; skipping"
+                             " dataset search.")
 
-    # Vérification de l'existence de l'index
-    input_path = Path(dataset_path)
-    if not input_path.exists() or not input_path.is_file():
-        print(f"Warning: dataset file not found: {dataset_path}")
-        return
+        # Vérification de l'existence de l'index
+        input_path = Path(dataset_path)
+        if not input_path.exists() or not input_path.is_file():
+            raise FileNotFoundError("Warning: dataset file"
+                                    f" not found: {dataset_path}")
+
+    except Exception as e:
+        raise ValueError(e)
 
     try:
         # Chargement du fichier JSON dataset
         with open(input_path, "r", encoding="utf-8") as f:
             dataset_payload: Any = json.load(f)
         if not isinstance(dataset_payload, dict):
-            print(f"Warning: dataset JSON is not an object: {dataset_path}")
-            return
+            raise ValueError("Warning: dataset JSON is not "
+                             f"an object: {dataset_path}")
+        # Extraction des questions du dataset
+        raw_dataset = dataset_payload.get("rag_questions")
+        if not isinstance(raw_dataset, list):
+            raise ValueError("Warning: dataset has no 'rag_questions'"
+                             f" list: {dataset_path}")
 
     except (OSError, json.JSONDecodeError) as exc:
-        print(f"Warning: malformed dataset JSON for {dataset_path}: {exc}")
-        return
-
-    # Extraction des questions du dataset
-    raw_dataset = dataset_payload.get("rag_questions")
-    if not isinstance(raw_dataset, list):
-        print(f"Warning: dataset has no 'rag_questions' list: {dataset_path}")
-        return
+        raise ValueError("Warning: malformed dataset "
+                         f"JSON for {dataset_path}: {exc}")
 
     # Création du répertoire de sauvegarde
     save_path = Path(save_directory) / input_path.name
