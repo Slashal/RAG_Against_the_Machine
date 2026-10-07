@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 14:05:45 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/07 16:17:22 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/07 17:54:33 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 """Python Fire CLI entry point for indexing, retrieval, and evaluation."""
@@ -45,7 +45,8 @@ class CLI:
         search(query, k, processed_path)
 
     def search_dataset(self, dataset_path: str, k: int,
-                       save_directory: str) -> None:
+                       save_directory: str,
+                       processed_path: str = "data/processed") -> None:
         """Run search over a dataset and save StudentSearchResults JSON."""
 
         k = min(k, self.MAX_K)

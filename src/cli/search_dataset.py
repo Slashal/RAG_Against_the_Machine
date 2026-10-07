@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 18:31:12 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/07 16:17:15 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/07 17:54:54 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 
@@ -25,7 +25,7 @@ import json
 
 
 def search_dataset(dataset_path: str, k: int,
-                   save_directory: str) -> None:
+                   save_directory: str, processed_path: str) -> None:
     """Run search for every question in a dataset and save JSON output."""
 
     try:
@@ -80,12 +80,13 @@ def search_dataset(dataset_path: str, k: int,
                 not isinstance(value, UnansweredQuestion)):
             continue
         # Extraction de la question et de son ID
-        print(value)
         question = value.question
         question_id = value.question_id
 
         # Récupération des sources correspondantes à la question
-        retrieved_sources = search(query=question, k=k, printable=0)
+        retrieved_sources = search(query=question,
+                                   processed_path=processed_path,
+                                   k=k, printable=0)
         # Ajout des résultats à la liste des résultats
         results.search_results.append(
             MinimalSearchResults(
