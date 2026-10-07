@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 14:05:45 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/07 17:54:33 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/07 17:57:19 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 """Python Fire CLI entry point for indexing, retrieval, and evaluation."""
@@ -50,7 +50,7 @@ class CLI:
         """Run search over a dataset and save StudentSearchResults JSON."""
 
         k = min(k, self.MAX_K)
-        search_dataset(dataset_path, k, save_directory)
+        search_dataset(dataset_path, k, save_directory, processed_path)
 
     def answer(self, question: str, processed_path: str = "data/processed",
                k: int = 5) -> None:
