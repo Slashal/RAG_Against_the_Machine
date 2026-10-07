@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 14:05:45 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/07 16:04:13 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/07 16:07:27 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 """Python Fire CLI entry point for indexing, retrieval, and evaluation."""
@@ -51,11 +51,12 @@ class CLI:
         k = min(k, self.MAX_K)
         search_dataset(dataset_path, k, save_directory)
 
-    def answer(self, question: str, k: int = 5) -> None:
+    def answer(self, question: str, processed_path: str = "data/processed",
+               k: int = 5) -> None:
         """Generate one grounded answer for a single question."""
 
         k = min(k, self.MAX_K)
-        print(answer(question, k))
+        print(answer(question, processed_path, k))
 
     def answer_dataset(self, student_search_results_path: str,
                        save_directory: str = None) -> None:

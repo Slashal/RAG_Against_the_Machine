@@ -6,7 +6,7 @@
 #  By: hguesne <hguesne@student.42lehavre.fr>    +#+  +:+       +#+         #
 #                                              +#+#+#+#+#+   +#+            #
 #  Created: 2026/09/28 20:49:57 by hguesne         #+#    #+#               #
-#  Updated: 2026/10/06 18:02:10 by hguesne         ###   ########.fr        #
+#  Updated: 2026/10/07 16:07:59 by hguesne         ###   ########.fr        #
 #                                                                           #
 # ************************************************************************* #
 """Answer generation on top of retrieved source snippets."""
@@ -100,7 +100,7 @@ def generate_answer(question: str, context_snippets: list[str], tokenizer: Any,
     return answer
 
 
-def answer(question: str, k: int = 5) -> str:
+def answer(question: str, processed_path: str, k: int = 5) -> str:
     """Retrieve context for one question and return the generated answer."""
 
     k = min(k, 10)
@@ -113,7 +113,7 @@ def answer(question: str, k: int = 5) -> str:
     tokenizer, model = load_llm()
 
     # Recherche de contexte
-    temp = search(question, k, printable=0)
+    temp = search(question, k, processed_path, printable=0)
     context_snippets = [item.text for item in temp]
 
     # Génération de la réponse
